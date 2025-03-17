@@ -34,15 +34,15 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         // 수신한 메시지를 모든 세션에 브로드캐스트
         ChatMessage chatMessage = objectMapper.readValue(message.getPayload(), ChatMessage.class);
-        TextMessage sendMessage = message;
+        TextMessage messageToSend = message;
         if (chatMessage.getType() == ChatMessage.MessageType.JOIN) {
             ChatMessage welcomeMessage = ChatMessage.createWelcomeMessage(chatMessage.getSender());
-            sendMessage = new TextMessage(objectMapper.writeValueAsBytes(welcomeMessage));
+            messageToSend = new TextMessage(objectMapper.writeValueAsBytes(welcomeMessage));
         }
 
         for (WebSocketSession webSocketSession : sessions) {
             if (webSocketSession.isOpen()) {
-                webSocketSession.sendMessage(sendMessage);
+                webSocketSession.sendMessage(messageToSend);
             }
         }
     }
