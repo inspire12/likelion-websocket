@@ -3,14 +3,18 @@ package com.inspire12.likelionwebsocket.config;
 import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.converter.MessageConverter;
+import org.springframework.messaging.handler.invocation.HandlerMethodArgumentResolver;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
 
 import java.util.List;
 
@@ -34,6 +38,35 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 //                .setAllowedOrigins("*")
                 .withSockJS();
     }
+
+    @Bean
+    public ServletServerContainerFactoryBean createWebSocketContainer() {
+        ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();
+        container.setMaxTextMessageBufferSize(8192);
+        container.setMaxBinaryMessageBufferSize(8192);
+        return container;
+    }
+
+
+    // 메시지 처리 쓰레드 풀(thread pool)의 크기 등 세부적인 성능 튜닝이 가능합니다.
+    @Override
+    public void configureClientInboundChannel(ChannelRegistration registration) {
+        registration.taskExecutor().corePoolSize(4).maxPoolSize(10);
+    }
+
+
+    // 메시지 전송의 성능 튜닝 및 세부 설정이 가능합니다.
+    @Override
+    public void configureClientOutboundChannel(ChannelRegistration registration) {
+        registration.taskExecutor().corePoolSize(4).maxPoolSize(10);
+    }
+
+    // 핸들러 메서드의 파라미터를 커스텀하게 바인딩할 때 사용합니다.
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new CustomUserResolver());
+    }
+
 
     @Override
     public boolean configureMessageConverters(List<MessageConverter> messageConverters) {
