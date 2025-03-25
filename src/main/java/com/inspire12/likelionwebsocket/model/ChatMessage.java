@@ -2,7 +2,6 @@ package com.inspire12.likelionwebsocket.model;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 
 @Builder
@@ -26,8 +25,8 @@ public class ChatMessage {
                 .sender("System")
                 .content(
                         String.format("""
-                        %s 님이 들어왔습니다.
-                        """, sender))
+                                %s 님이 들어왔습니다.
+                                """, sender))
                 .type(ChatMessage.MessageType.JOIN)
                 .build();
 
