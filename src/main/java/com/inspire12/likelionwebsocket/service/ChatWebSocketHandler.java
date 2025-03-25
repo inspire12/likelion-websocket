@@ -3,8 +3,10 @@ package com.inspire12.likelionwebsocket.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inspire12.likelionwebsocket.model.ChatMessage;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.PongMessage;
@@ -16,8 +18,12 @@ import java.security.Principal;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+
+@Component
+
 public class ChatWebSocketHandler extends TextWebSocketHandler {
     // 연결된 모든 세션을 저장할 스레드 안전한 Set
+    @Getter
     private final Set<WebSocketSession> sessions = new CopyOnWriteArraySet<>();
     private final ObjectMapper objectMapper;
 
@@ -45,7 +51,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
         if (chatMessage.getType() == ChatMessage.MessageType.CHAT) {
             if (chatMessage.getContent().equals("안녕하세요")) {
-                ChatMessage reply = ChatMessage.broadcastReply();
+                ChatMessage reply = ChatMessage.broadcastSayHello();
                 replyToSend = new TextMessage(objectMapper.writeValueAsBytes(reply));
                 System.out.println(replyToSend.getPayload());
                 isReply = 1;

@@ -34,7 +34,7 @@ public class ChatMessage {
         return welcomeMessage;
     }
 
-    public static ChatMessage broadcastReply() {
+    public static ChatMessage broadcastSayHello() {
             ChatMessage reply = ChatMessage.builder()
                     .sender("System")
                     .content(
