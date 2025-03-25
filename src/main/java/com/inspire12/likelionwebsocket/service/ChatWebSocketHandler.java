@@ -3,7 +3,12 @@ package com.inspire12.likelionwebsocket.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inspire12.likelionwebsocket.model.ChatMessage;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.PongMessage;
@@ -15,8 +20,12 @@ import java.security.Principal;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+@Slf4j
+@Component
 public class ChatWebSocketHandler extends TextWebSocketHandler {
     // 연결된 모든 세션을 저장할 스레드 안전한 Set
+    // CopyOnWriteArraySet : 동시성 이슈 처리를 위한 자료구조
+    @Getter
     private final Set<WebSocketSession> sessions = new CopyOnWriteArraySet<>();
     private final ObjectMapper objectMapper;
 
