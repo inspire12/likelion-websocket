@@ -33,4 +33,12 @@ public class ChatMessage {
 
         return welcomeMessage;
     }
+
+    public static ChatMessage createServerMessage(String message){
+        return ChatMessage.builder()
+                          .sender("System")
+                          .content(message)
+                          .type(MessageType.CHAT)
+                          .build();
+    }
 }
