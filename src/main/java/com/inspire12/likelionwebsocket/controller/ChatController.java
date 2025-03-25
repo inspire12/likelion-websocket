@@ -22,7 +22,7 @@ public class ChatController {
         this.messageService = messageService;
     }
 
-    @PostMapping("call")
+    @PostMapping("/call")
     public ChatMessage call(@RequestBody ChatMessage chatMessage) {
         return messageService.sendMessage(chatMessage);
     }
