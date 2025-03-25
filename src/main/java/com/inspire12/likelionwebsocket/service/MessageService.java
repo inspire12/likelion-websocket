@@ -9,4 +9,8 @@ public class MessageService {
     public ChatMessage createWelcomeMessage(ChatMessage chatMessage) {
         return ChatMessage.createWelcomeMessage(chatMessage.getSender());
     }
+
+    public ChatMessage broadcastReply() {
+        return ChatMessage.broadcastReply();
+    }
 }

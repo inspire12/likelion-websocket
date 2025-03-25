@@ -33,4 +33,17 @@ public class ChatMessage {
 
         return welcomeMessage;
     }
+
+    public static ChatMessage broadcastReply() {
+            ChatMessage reply = ChatMessage.builder()
+                    .sender("System")
+                    .content(
+                            String.format("""
+                        어서오세요 여러분.
+                        """))
+                    .type(ChatMessage.MessageType.JOIN)
+                    .build();
+
+            return reply;
+    }
 }

@@ -4,6 +4,7 @@ package com.inspire12.likelionwebsocket.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inspire12.likelionwebsocket.model.ChatMessage;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.PongMessage;
@@ -34,14 +35,30 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         // 수신한 메시지를 모든 세션에 브로드캐스트
         ChatMessage chatMessage = objectMapper.readValue(message.getPayload(), ChatMessage.class);
         TextMessage messageToSend = message;
+        TextMessage replyToSend = message;
+        int isReply = 0;
+
         if (chatMessage.getType() == ChatMessage.MessageType.JOIN) {
             ChatMessage welcomeMessage = ChatMessage.createWelcomeMessage(chatMessage.getSender());
             messageToSend = new TextMessage(objectMapper.writeValueAsBytes(welcomeMessage));
         }
 
+        if (chatMessage.getType() == ChatMessage.MessageType.CHAT) {
+            if (chatMessage.getContent().equals("안녕하세요")) {
+                ChatMessage reply = ChatMessage.broadcastReply();
+                replyToSend = new TextMessage(objectMapper.writeValueAsBytes(reply));
+                System.out.println(replyToSend.getPayload());
+                isReply = 1;
+            }
+        }
+
         for (WebSocketSession webSocketSession : sessions) {
             if (webSocketSession.isOpen()) {
                 webSocketSession.sendMessage(messageToSend);
+                if(isReply == 1){
+                    webSocketSession.sendMessage(replyToSend);
+                    isReply = 0;
+                }
             }
         }
     }
