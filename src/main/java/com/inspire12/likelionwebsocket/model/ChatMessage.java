@@ -11,7 +11,8 @@ public class ChatMessage {
     public enum MessageType {
         CHAT,
         JOIN,
-        LEAVE
+        LEAVE,
+        NEW
     }
 
     @Getter
@@ -33,4 +34,17 @@ public class ChatMessage {
 
         return welcomeMessage;
     }
+
+    //추가 : 시스템 메시지 포맷
+    public static ChatMessage createMessage(String sender) {
+        ChatMessage welcomeMessage = ChatMessage.builder()
+                .sender("System")
+                .content(
+                        String.format("안녕하세요 여러분", sender))
+                .type(ChatMessage.MessageType.CHAT)
+                .build();
+
+        return welcomeMessage;
+    }
 }
+
