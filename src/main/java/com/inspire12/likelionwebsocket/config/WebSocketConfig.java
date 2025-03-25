@@ -11,11 +11,12 @@ import org.springframework.web.socket.config.annotation.*;
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
 
-    private final ObjectMapper mapper;
+    // new : 직접 객체 생성 -> Spring Bean으로 관리
+    private final ChatWebSocketHandler chatWebSocketHandler;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new ChatWebSocketHandler(mapper),  "/ws")
+        registry.addHandler(chatWebSocketHandler,  "/ws")
 //                .setAllowedOrigins("http://localhost:3000");
                 .setAllowedOrigins("*");
     }
