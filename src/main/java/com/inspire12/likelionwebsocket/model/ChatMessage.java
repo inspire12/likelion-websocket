@@ -22,29 +22,39 @@ public class ChatMessage {
     @Getter
     private String sender;
 
-    public static ChatMessage createWelcomeMessage(String sender) {
+    public static ChatMessage createWelcomeMessage(ChatMessage chatMessage) {
         ChatMessage welcomeMessage = ChatMessage.builder()
                 .sender("System")
                 .content(
                         String.format("""
                         %s 님이 들어왔습니다.
-                        """, sender))
+                        """, chatMessage.getSender()))
+//                .content(chatMessage.getContent())
                 .type(ChatMessage.MessageType.JOIN)
                 .build();
 
         return welcomeMessage;
     }
 
-    //추가 : 시스템 메시지 포맷
-    public static ChatMessage createMessage(String sender) {
-        ChatMessage welcomeMessage = ChatMessage.builder()
-                .sender("System")
-                .content(
-                        String.format("안녕하세요 여러분", sender))
-                .type(ChatMessage.MessageType.CHAT)
+    public static ChatMessage createMessage(ChatMessage chatMessage) {
+        ChatMessage message = ChatMessage.builder()
+                .sender(chatMessage.getSender())
+                .content(chatMessage.getContent())
+                .type(chatMessage.getType())
                 .build();
 
-        return welcomeMessage;
+        return message;
+    }
+
+    //추가 : 시스템 메시지 포맷
+    public static ChatMessage createSystemMessage(ChatMessage chatMessage) {
+        ChatMessage systemMessage = ChatMessage.builder()
+                .sender("System")
+                .content("안녕하세요 어서오세요")
+                .type(chatMessage.getType())
+                .build();
+
+        return systemMessage;
     }
 }
 

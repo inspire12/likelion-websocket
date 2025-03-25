@@ -9,11 +9,12 @@ import org.springframework.stereotype.Service;
 public class MessageService {
 
     public ChatMessage createWelcomeMessage(ChatMessage chatMessage) {
-        return ChatMessage.createWelcomeMessage(chatMessage.getSender());
+        return ChatMessage.createWelcomeMessage(chatMessage);
     }
 
     //시스템 메시지 메소드
-    public ChatMessage createMessage(ChatMessage chatMessage) {
-        return ChatMessage.createMessage(chatMessage.getSender());
+    public void createSystemMessage(ChatMessage chatMessage) {
+        ChatMessage.createMessage(chatMessage);
+        ChatMessage.createSystemMessage(chatMessage);
     }
 }
