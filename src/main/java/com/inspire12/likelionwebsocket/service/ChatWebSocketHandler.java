@@ -2,8 +2,13 @@ package com.inspire12.likelionwebsocket.service;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.inspire12.likelionwebsocket.holder.WebSocketSessionHolder;
 import com.inspire12.likelionwebsocket.model.ChatMessage;
+
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.PongMessage;
@@ -15,9 +20,15 @@ import java.security.Principal;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+
+// 웹소켓 핸들러 클래스
+// 기존에 bean대신 new ChatWebSocketHandler를 통해서 인스턴스를 사용하던것을
+// Rest API 호출을 위해 사용할 수 있도록 @Component 어노테이션을 통해 Bean 등록
+@Component
+@Getter
 public class ChatWebSocketHandler extends TextWebSocketHandler {
     // 연결된 모든 세션을 저장할 스레드 안전한 Set
-    private final Set<WebSocketSession> sessions = new CopyOnWriteArraySet<>();
+    // private final Set<WebSocketSession> sessions = new CopyOnWriteArraySet<>();
     private final ObjectMapper objectMapper;
 
     public ChatWebSocketHandler(ObjectMapper objectMapper) {
@@ -26,7 +37,8 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        sessions.add(session);
+        // sessions.add(session);
+        WebSocketSessionHolder.addSession(session);
     }
 
     @Override
@@ -39,7 +51,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             messageToSend = new TextMessage(objectMapper.writeValueAsBytes(welcomeMessage));
         }
 
-        for (WebSocketSession webSocketSession : sessions) {
+        for (WebSocketSession webSocketSession : WebSocketSessionHolder.getSessions()) {
             if (webSocketSession.isOpen()) {
                 webSocketSession.sendMessage(messageToSend);
             }
@@ -48,7 +60,8 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        sessions.remove(session);
+        // sessions.remove(session);
+        WebSocketSessionHolder.removeSession(session);
     }
 }
 
