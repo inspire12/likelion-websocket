@@ -2,6 +2,7 @@ package com.inspire12.likelionwebsocket.service;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.inspire12.likelionwebsocket.holder.WebSocketHolder;
 import com.inspire12.likelionwebsocket.model.ChatMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @Service
 public class ChatWebSocketHandler extends TextWebSocketHandler {
     // 연결된 모든 세션을 저장할 스레드 안전한 Set
-    private final Set<WebSocketSession> sessions = new CopyOnWriteArraySet<>();
+//    private final Set<WebSocketSession> sessions = new CopyOnWriteArraySet<>();
     private final ObjectMapper objectMapper;
 
     // 생성자로 di
@@ -28,7 +29,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        sessions.add(session);
+        WebSocketHolder.addSession(session);
     }
 
     @Override// TODO 웹소켓 기본 라이브러리의 메서드를 오버라이드해 원하는 방식으로 메세지 핸들링
@@ -41,8 +42,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             messageToSend = new TextMessage(objectMapper.writeValueAsBytes(welcomeMessage));
         }
 
-        System.out.println("[DEBUG] Current sessions size: " + sessions.size());
-        for (WebSocketSession webSocketSession : sessions) { // 이미 모든 세션에 브로드 캐스팅하고 있음
+        for (WebSocketSession webSocketSession : WebSocketHolder.getSessions()) { // 이미 모든 세션에 브로드 캐스팅하고 있음
             if (webSocketSession.isOpen()) {
                 webSocketSession.sendMessage(messageToSend);
             }
@@ -50,14 +50,13 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     }
 
     public void broadcast(ChatMessage chatMessage) throws Exception {
-        System.out.println("[DEBUG] broadcast() called with: " + chatMessage);
+
         String payload = objectMapper.writeValueAsString(chatMessage);
         TextMessage messageToSend = new TextMessage(payload);
 
-        System.out.println("[DEBUG] Current sessions size: " + sessions.size());
-        for (WebSocketSession webSocketSession : sessions) {
+
+        for (WebSocketSession webSocketSession : WebSocketHolder.getSessions()) {
             if (webSocketSession.isOpen()) {
-                System.out.println("[DEBUG] Sending message to session " + webSocketSession.getId());
                 webSocketSession.sendMessage(messageToSend);
             }
         }
@@ -65,7 +64,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        sessions.remove(session);
+        WebSocketHolder.getSessions().remove(session);
     }
 }
 
