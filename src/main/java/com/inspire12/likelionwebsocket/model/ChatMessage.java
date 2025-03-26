@@ -2,7 +2,8 @@ package com.inspire12.likelionwebsocket.model;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketMessage;
 
 
 @Builder
