@@ -25,5 +25,5 @@ public class ChatController {
     @PostMapping("/call")
     public ChatMessage call(@RequestBody ChatMessage chatMessage) {
         return messageService.sendMessage(chatMessage);
-    }
+    } //수정 테스트ㅎ
 }
