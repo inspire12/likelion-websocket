@@ -3,18 +3,12 @@ package com.inspire12.likelionwebsocket.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inspire12.likelionwebsocket.model.ChatMessage;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.PongMessage;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import java.security.Principal;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 @Component
 public class ChatWebSocketHandler extends TextWebSocketHandler {
@@ -26,7 +20,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        WebSocketSessionHolder.sessions.add(session);
+        WebSocketSessionHolder.add(session);
     }
 
     @Override
@@ -39,7 +33,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             messageToSend = new TextMessage(objectMapper.writeValueAsBytes(welcomeMessage));
         }
 
-        for (WebSocketSession webSocketSession : WebSocketSessionHolder.sessions) {
+        for (WebSocketSession webSocketSession : WebSocketSessionHolder.getSessions()) {
             if (webSocketSession.isOpen()) {
                 webSocketSession.sendMessage(messageToSend);
             }
@@ -48,7 +42,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        WebSocketSessionHolder.sessions.remove(session);
+        WebSocketSessionHolder.remove(session);
     }
 }
 

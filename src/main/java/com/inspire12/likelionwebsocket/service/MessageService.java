@@ -21,7 +21,7 @@ public class MessageService {
 
         String messageJson = objectMapper.writeValueAsString(message);
 
-        for (WebSocketSession webSocketSession : WebSocketSessionHolder.sessions) {
+        for (WebSocketSession webSocketSession : WebSocketSessionHolder.getSessions()) {
             if (webSocketSession.isOpen()) {
                 webSocketSession.sendMessage(new TextMessage(messageJson));
             }
