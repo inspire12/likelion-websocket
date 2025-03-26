@@ -41,6 +41,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             messageToSend = new TextMessage(objectMapper.writeValueAsBytes(welcomeMessage));
         }
 
+        System.out.println("[DEBUG] Current sessions size: " + sessions.size());
         for (WebSocketSession webSocketSession : sessions) { // 이미 모든 세션에 브로드 캐스팅하고 있음
             if (webSocketSession.isOpen()) {
                 webSocketSession.sendMessage(messageToSend);
@@ -49,11 +50,14 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     }
 
     public void broadcast(ChatMessage chatMessage) throws Exception {
+        System.out.println("[DEBUG] broadcast() called with: " + chatMessage);
         String payload = objectMapper.writeValueAsString(chatMessage);
         TextMessage messageToSend = new TextMessage(payload);
 
+        System.out.println("[DEBUG] Current sessions size: " + sessions.size());
         for (WebSocketSession webSocketSession : sessions) {
             if (webSocketSession.isOpen()) {
+                System.out.println("[DEBUG] Sending message to session " + webSocketSession.getId());
                 webSocketSession.sendMessage(messageToSend);
             }
         }

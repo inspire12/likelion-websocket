@@ -23,7 +23,7 @@ ext {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket' //TODO 스프링에서 웹소켓을 간단하게 사용할수 있게 해주는 디펜덴시
 //    implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
