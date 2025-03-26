@@ -19,6 +19,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @Component
 public class ChatWebSocketHandler extends TextWebSocketHandler {
     // 연결된 모든 세션을 저장할 스레드 안전한 Set
+    @Getter
     private final Set<WebSocketSession> sessions = new CopyOnWriteArraySet<>();
     private final ObjectMapper objectMapper;
 
