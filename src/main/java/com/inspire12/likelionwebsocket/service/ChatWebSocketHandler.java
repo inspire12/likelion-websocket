@@ -1,20 +1,18 @@
 package com.inspire12.likelionwebsocket.service;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inspire12.likelionwebsocket.model.ChatMessage;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.PongMessage;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import java.security.Principal;
+import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+@Component
 public class ChatWebSocketHandler extends TextWebSocketHandler {
     // 연결된 모든 세션을 저장할 스레드 안전한 Set
     private final Set<WebSocketSession> sessions = new CopyOnWriteArraySet<>();
@@ -22,6 +20,21 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     public ChatWebSocketHandler(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
+    }
+
+    public ChatMessage sendMessageToAll(ChatMessage chatMessage) {
+        try {
+            TextMessage textMessage = new TextMessage(objectMapper.writeValueAsString(chatMessage));
+
+            for (WebSocketSession session : sessions) {
+                if (session.isOpen()) {
+                    session.sendMessage(textMessage);
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return chatMessage;
     }
 
     @Override
