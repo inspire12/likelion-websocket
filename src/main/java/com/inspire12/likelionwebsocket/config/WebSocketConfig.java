@@ -15,6 +15,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+        // endpoint 설정
         registry.addHandler(chatWebSocketHandler, "/ws") // "/ws" 경로로 들어오는 WebSocket 요청을 chatWebSockeHandler가 처리하도록 설정
                 .setAllowedOrigins("*"); // 모든 도메인에서 WebSocket 접속을 허용
     }
