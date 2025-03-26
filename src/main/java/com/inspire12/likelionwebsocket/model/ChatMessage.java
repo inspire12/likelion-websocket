@@ -3,8 +3,9 @@ package com.inspire12.likelionwebsocket.model;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-
+@ToString
 @Builder
 public class ChatMessage {
 
