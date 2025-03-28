@@ -15,7 +15,25 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 import java.util.List;
 
 @Configuration
-public class WebSocketConfig {
+@EnableWebSocketMessageBroker
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer{
+
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        registry.addEndpoint("/ws")     // lets client establish websocket connection on localhost:8083/ws - upon establishment, STOMP frame flow will start
+                .setAllowedOrigins("http://localhost:3000")
+                .withSockJS();
+    }
+
+    // message broker
+    // compare with the image on spring docs, routing which messages will go through controller or directly to broker
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry registry) {
+        // STOMP messages with dest headers containing /app shall be routed to certain @MessageMapping methods
+        registry.setApplicationDestinationPrefixes("/app");
+        // or messages with dest headers containing /topic or /queue shall be routed directly to the broker
+        registry.enableSimpleBroker("/topic");
+    }
 
     public boolean configureMessageConverters(List<MessageConverter> messageConverters) {
         MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
