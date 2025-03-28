@@ -20,11 +20,6 @@ public class ChatController {
         messageService.sendMessage(chatMessage);
     }
 
-    @MessageMapping("/chat.sendAiMessage")
-    @SendTo("/topic/public")
-    public ChatMessage sendAiMessage(ChatMessage chatMessage) {
-        return messageService.sendMessageWithAI(chatMessage);
-    }
 
     // /app/chat.addUser 로 들어오는 메시지를 처리하여 /topic/public 로 전송
     @MessageMapping("/chat.addUser")
