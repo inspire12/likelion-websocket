@@ -35,6 +35,7 @@ public class WebSocketSessionListenManager {
             sessions.put(user.getName(), user);
             stompMessagingService.sendToTopic(ChatMessage.createWelcomeMessage(user.getName()));
         }
+        System.out.println("current users: " + sessions.size());
     }
 
     @EventListener
@@ -44,6 +45,7 @@ public class WebSocketSessionListenManager {
         if (user != null) {
             sessions.remove(user.getName());
         }
+        System.out.println("current users: " + sessions.size());
     }
 
     // activeUser
