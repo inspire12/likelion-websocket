@@ -1,8 +1,10 @@
 package com.inspire12.likelionwebsocket.handshake;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketHandler;
+import org.springframework.web.socket.server.HandshakeHandler;
 import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
 import java.nio.file.attribute.UserPrincipal;
@@ -11,8 +13,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+@Slf4j
 @Component
-public class CustomHandshakeHandler {
+public class CustomHandshakeHandler extends DefaultHandshakeHandler {
+
+    @Override
+    protected Principal determineUser(
+        ServerHttpRequest request,
+        WebSocketHandler wsHandler,
+        Map<String, Object> attributes
+    ) {
+        String token = getTokenFromRequest(request);
+        System.out.println(token);
+        if (token != null && validateToken(token)) {
+            String username = extractUsernameFromToken(token);
+            return () -> username;
+        }
+        return null;
+    }
 
     private String getTokenFromRequest(ServerHttpRequest request) {
         // URL 파라미터에서 토큰 추출
@@ -25,6 +43,7 @@ public class CustomHandshakeHandler {
 
     private boolean validateToken(String token) {
         // JWT 토큰 검증 로직 구현 (JWT 라이브러리 이용)
+
         return true;
     }
 

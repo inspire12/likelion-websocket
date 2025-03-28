@@ -20,6 +20,7 @@ import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.server.HandshakeHandler;
 import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
 import java.nio.file.attribute.UserPrincipal;
@@ -33,22 +34,27 @@ import java.util.UUID;
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    private final CustomHandshakeHandler customHandshakeHandler;
+    private final HandshakeHandler customHandshakeHandler;
 
-    public WebSocketConfig(CustomHandshakeHandler customHandshakeHandler) {
+    public WebSocketConfig(HandshakeHandler customHandshakeHandler) {
         this.customHandshakeHandler = customHandshakeHandler;
     }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         // 클라이언트가 구독할 prefix 설정 (예: /topic)
-
+        config.enableSimpleBroker("/topic", "/queue");
+        config.setApplicationDestinationPrefixes("/app");
+        config.setUserDestinationPrefix("/user");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // WebSocket 연결 엔드포인트 등록, SockJS fallback 제공
-
+        registry.addEndpoint("/ws")
+            .setAllowedOriginPatterns("*")
+            .setHandshakeHandler(customHandshakeHandler)
+            .withSockJS();
     }
 
 
@@ -63,5 +69,4 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // false를 리턴하면 기본 변환기도 함께 등록되지만 여기서는 커스텀 변환기만 사용하도록 합니다.
         return false;
     }
-
 }
