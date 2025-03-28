@@ -8,14 +8,7 @@ import org.springframework.web.socket.config.annotation.*;
 
 @RequiredArgsConstructor
 @Configuration
-@EnableWebSocket
-public class WebSocketConfig implements WebSocketConfigurer {
+public class WebSocketConfig {
     private final ObjectMapper mapper;
-
-    @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new ChatWebSocketHandler(mapper), "ws")
-                .setAllowedOriginPatterns("*");
-    }
 }
 
