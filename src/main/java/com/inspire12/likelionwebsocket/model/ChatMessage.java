@@ -33,4 +33,17 @@ public class ChatMessage {
 
         return welcomeMessage;
     }
+
+    public static ChatMessage createAdminMessage(String sender) {
+        ChatMessage adminMessage = ChatMessage.builder()
+            .sender("System(확성기)")
+            .content(
+                String.format("""
+                        %s 님이 들어왔습니다.
+                        """, sender))
+            .type(ChatMessage.MessageType.JOIN)
+            .build();
+
+        return adminMessage;
+    }
 }
