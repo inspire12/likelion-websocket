@@ -34,8 +34,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // WebSocket 연결 엔드포인트 등록, SockJS fallback 제공
         registry.addEndpoint("/ws")
-                .setAllowedOrigins("http://localhost:3000") // 클라이언트 주소 허용
-//                .setAllowedOrigins("*")
+//                .setAllowedOrigins("http://localhost:3000") // 클라이언트 주소 허용
+                .setAllowedOriginPatterns("*")
                 .withSockJS();
     }
 
