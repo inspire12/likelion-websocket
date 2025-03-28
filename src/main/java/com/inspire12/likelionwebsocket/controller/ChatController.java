@@ -14,10 +14,14 @@ public class ChatController {
     private final MessageService messageService;
 
     // /app/chat.sendMessage 로 들어오는 메시지를 처리하여 /topic/public 로 전송
+    @MessageMapping("/chat.sendMessage")
+    @SendTo("/topic/public")
     public ChatMessage sendMessage(ChatMessage chatMessage) {
         return chatMessage;
     }
 
+    @MessageMapping("/app/chat.addUser")
+    @SendTo("/topic/public")
     // /app/chat.addUser 로 들어오는 메시지를 처리하여 /topic/public 로 전송
     public ChatMessage addUser(ChatMessage chatMessage) {
         return messageService.createWelcomeMessage(chatMessage);
