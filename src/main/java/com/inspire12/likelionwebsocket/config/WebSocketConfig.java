@@ -15,7 +15,17 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 import java.util.List;
 
 @Configuration
-public class WebSocketConfig {
+@EnableWebSocketMessageBroker
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer{
+
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        //웹소켓 연결 엔드포인트 등록
+        registry.addEndpoint("/ws")
+                .setAllowedOrigins("http://localhost:3000")
+                .withSockJS();
+
+    }
 
     public boolean configureMessageConverters(List<MessageConverter> messageConverters) {
         MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
@@ -26,6 +36,14 @@ public class WebSocketConfig {
         messageConverters.add(converter);
         // false를 리턴하면 기본 변환기도 함께 등록되지만 여기서는 커스텀 변환기만 사용하도록 합니다.
         return false;
+    }
+
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry registry) {
+        //클라이언트가 구독할 prefix 설정
+        registry.enableSimpleBroker("/topic");
+        //클라이언트가 메시지 보낼 때 사용하는 prefix 설정
+        registry.setApplicationDestinationPrefixes("/app");
     }
 
 }
