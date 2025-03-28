@@ -12,7 +12,18 @@ import java.util.Map;
 import java.util.UUID;
 
 @Component
-public class CustomHandshakeHandler {
+public class CustomHandshakeHandler extends DefaultHandshakeHandler {
+    @Override
+    protected Principal determineUser(ServerHttpRequest request, WebSocketHandler wsHandler, Map<String, Object> attributes) {
+        String token = getTokenFromRequest(request);
+
+        if (token != null && validateToken(token)) {
+            String username = extractUsernameFromToken(token);
+            return () -> username;
+        }
+
+        return null;
+    }
 
     private String getTokenFromRequest(ServerHttpRequest request) {
         // URL 파라미터에서 토큰 추출
