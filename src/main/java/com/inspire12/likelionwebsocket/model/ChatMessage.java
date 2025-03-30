@@ -11,7 +11,8 @@ public class ChatMessage {
     public enum MessageType {
         CHAT,
         JOIN,
-        LEAVE
+        LEAVE,
+        SYSTEM
     }
 
     @Getter
@@ -32,5 +33,15 @@ public class ChatMessage {
                 .build();
 
         return welcomeMessage;
+    }
+
+    public static ChatMessage createSystemMessage(ChatMessage chatMessage) {
+        ChatMessage systemMessage = ChatMessage.builder()
+                .sender("System")
+                .content("안녕하세요 어서오세요")
+                .type(chatMessage.getType())
+                .build();
+
+        return systemMessage;
     }
 }
