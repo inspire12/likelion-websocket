@@ -3,6 +3,8 @@ package com.inspire12.likelionwebsocket.controller;
 import com.inspire12.likelionwebsocket.model.ChatMessage;
 import com.inspire12.likelionwebsocket.service.MessageService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -10,13 +12,14 @@ import org.springframework.stereotype.Controller;
 @RequiredArgsConstructor
 @Controller
 public class ChatController {
-
+    private Logger log = LoggerFactory.getLogger(this.getClass().getName());
     private final MessageService messageService;
 
     // /app/chat.sendMessage 로 들어오는 메시지를 처리하여 /topic/public 로 전송
     @MessageMapping("/chat.sendMessage")
     @SendTo("/topic/public")
     public ChatMessage sendMessage(ChatMessage chatMessage) {
+        log.info("{} {} {}", chatMessage.getType(), chatMessage.getSender(), chatMessage.getContent());
         return chatMessage;
     }
 
